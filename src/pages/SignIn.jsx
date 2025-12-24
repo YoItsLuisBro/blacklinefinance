@@ -32,7 +32,7 @@ export function SignIn() {
     <div className="min-h-[70vh] grid place-items-center">
       <Card className="w-full max-w-md p-6">
         <div className="mb-5">
-          <div className="text-lg font-semibold">Sing in</div>
+          <div className="text-lg font-semibold">Sign in</div>
           <div className="text-sm text-white/55">
             Welcome back to Blackline Finance.
           </div>
