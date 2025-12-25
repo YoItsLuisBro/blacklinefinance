@@ -1,11 +1,53 @@
-import React from "react";
-import { Link, Outlet } from "react-router";
+import React, { useEffect, useState } from "react";
+import { Link, NavLink, Outlet } from "react-router";
 import { Button } from "../components/ui/Button";
 import { useAuth } from "../auth/AuthProvider";
-import { CreditCard, LogOut } from "lucide-react";
+import { CreditCard, LogOut, Upload, List } from "lucide-react";
+import { ensureDefaultCategories } from "../lib/seedDefaults";
+
+function NavItem({ to, icon, children }) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        [
+          "inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm border transition",
+          isActive
+            ? "bg-white/10 border-white/15"
+            : "bg-transparent border-white/10 hover:bg-white/6",
+        ].join(" ")
+      }
+    >
+      {icon}
+      {children}
+    </NavLink>
+  );
+}
 
 export function AppShell() {
   const { user, signOut } = useAuth();
+  const [seeded, setSeeded] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function run() {
+      if (!user?.id || seeded) return;
+      try {
+        await ensureDefaultCategories(user.id);
+        if (alive) setSeeded(true);
+      } catch (e) {
+        // Don’t block the UI if seeding fails; you can retry later
+        console.error(e);
+        if (alive) setSeeded(true);
+      }
+    }
+
+    run();
+    return () => {
+      alive = false;
+    };
+  }, [user?.id, seeded]);
 
   return (
     <div className="min-h-full">
@@ -31,6 +73,17 @@ export function AppShell() {
               <LogOut size={16} />
               Sign out
             </Button>
+          </div>
+        </div>
+
+        <div className="mx-auto max-w-6xl px-4 pb-3">
+          <div className="flex flex-wrap gap-2">
+            <NavItem to="/app/transactions" icon={<List size={16} />}>
+              Transactions
+            </NavItem>
+            <NavItem to="/app/import" icon={<Upload size={16} />}>
+              Import CSV
+            </NavItem>
           </div>
         </div>
       </header>

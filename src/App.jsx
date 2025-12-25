@@ -6,6 +6,8 @@ import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
 import { Dashboard } from "./pages/Dashboard";
 import { NotFound } from "./pages/NotFound";
+import { Transactions } from "./pages/Transactions";
+import { ImportCSV } from "./pages/ImportCSV";
 
 export default function App() {
   return (
@@ -18,6 +20,8 @@ export default function App() {
         <Route element={<Protected />}>
           <Route element={<AppShell />}>
             <Route path="/app" element={<Dashboard />} />
+            <Route path="/app/transactions" element={<Transactions />} />
+            <Route path="/app/import" element={<ImportCSV />} />
           </Route>
         </Route>
 
